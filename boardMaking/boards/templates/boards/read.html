@@ -22,11 +22,64 @@
       <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-6" style="border-bottom: 1px solid gray">
-            {{ title }}
+            {{ board.title }}
           </h1>
           <p class="lead" style="font-size: 90%">
-            {{ content }}
+            {{ board.content }}
           </p>
+          <a class="btn btn-secondary" href="/boards/lists/">목록으로</a>
+          <!-- Button trigger modal -->
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-toggle="modal"
+            data-target="#exampleModal"
+            style="float: right;"
+          >
+            삭제
+          </button>
+          <a
+            class="btn btn-secondary"
+            href="/boards/displayUpdate/{{ board.id }}"
+            style="float: right; margin-right: 10px"
+            >수정</a
+          >
+
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="exampleModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <br />
+                  <h2>
+                    ㄹㅇ?
+                  </h2>
+                  <br />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    ㄴㄴ
+                  </button>
+                  <a
+                    class="btn btn-primary"
+                    href="/boards/delete/{{ board.id }}"
+                    >묻고 따블로 가</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
