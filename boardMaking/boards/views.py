@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Board
+from .models import Board, Comment
 
 
 def write(request):
@@ -9,11 +9,9 @@ def write(request):
 def create(request):
     title = request.GET.get('title')
     content = request.GET.get('content')
-    level = request.GET.get('level')
     board = Board()
     board.title = title
     board.content = content
-    board.level = level
     board.save()
     return redirect('/boards/lists/')
 
@@ -26,7 +24,8 @@ def lists(request):
 
 def read(request, num):
     board = Board.objects.get(pk=num)
-    context = {'board': board}
+    comments = Comment.objects.filter(board__id=num)
+    context = {'board': board, 'comments': comments}
     return render(request, 'boards/read.html', context)
 
 
@@ -50,3 +49,21 @@ def delete(request, num):
     board = Board.objects.get(pk=num)
     board.delete()
     return redirect('/boards/lists/')
+
+
+def createComment(request, num):
+    content = request.GET.get('commentContent')
+    userName = request.GET.get('commentUserName')
+    comment = Comment()
+    comment.board = Board.objects.get(pk=num)
+    comment.content = content
+    comment.userName = userName
+    comment.save()
+    return redirect(f'/boards/read/{num}')
+
+
+def deleteComment(request, num1, num2):
+    board = Board.objects.get(pk=num1)
+    comment = Comment.objects.filter(board__id=num1, pk=num2)
+    comment.delete()
+    return redirect(f'/boards/read/{num1}')

@@ -1,103 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>이것은 게시판이여</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body>
-    <div
-      style="text-align: center; margin-top: 35px; font-size: 150%; font-weight: bold;"
-    >
-      게시글
-    </div>
-    <div class="container" style="margin-top:30px;">
-      <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-6" style="border-bottom: 1px solid gray">
-            {{ board.title }}
-          </h1>
-          <p class="lead" style="font-size: 90%">
-            {{ board.content }}
-          </p>
-          <a class="btn btn-secondary" href="/boards/lists/">목록으로</a>
-          <!-- Button trigger modal -->
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-toggle="modal"
-            data-target="#exampleModal"
-            style="float: right;"
-          >
-            삭제
-          </button>
-          <a
-            class="btn btn-secondary"
-            href="/boards/displayUpdate/{{ board.id }}"
-            style="float: right; margin-right: 10px"
-            >수정</a
-          >
 
-          <!-- Modal -->
-          <div
-            class="modal fade"
-            id="exampleModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-body">
-                  <br />
-                  <h2>
-                    ㄹㅇ?
-                  </h2>
-                  <br />
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-dismiss="modal"
-                  >
-                    ㄴㄴ
-                  </button>
-                  <a
-                    class="btn btn-primary"
-                    href="/boards/delete/{{ board.id }}"
-                    >묻고 따블로 가</a
-                  >
-                </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>이것은 게시판이여</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+</head>
+
+<body>
+  <div style="text-align: center; margin-top: 35px; font-size: 150%; font-weight: bold;">
+    게시글
+  </div>
+  <div class="container" style="margin-top:30px;">
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-6" style="border-bottom: 1px solid gray">
+          {{ board.title }}
+        </h1>
+        <p class="lead" style="font-size: 90%">
+          {{ board.content }}
+        </p>
+        <a class="btn btn-secondary" href="/boards/lists/" style="float: left;">목록으로</a>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal"
+          style="float: right;">
+          삭제
+        </button>
+        <a class="btn btn-secondary" href="/boards/displayUpdate/{{ board.id }}"
+          style="float: right; margin-right: 10px">수정</a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <br />
+                <h2>
+                  ㄹㅇ?
+                </h2>
+                <br />
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  ㄴㄴ
+                </button>
+                <a class="btn btn-primary" href="/boards/delete/{{ board.id }}">묻고 따블로 가</a>
               </div>
             </div>
           </div>
         </div>
+        <p>
+          <button class="btn btn-secondary" style="margin-left: 10px" type="button" data-toggle="collapse"
+            data-target="#commentWrite" aria-expanded="false" aria-controls="collapseExample">
+            댓글
+          </button>
+        </p>
+        <form action="/boards/read/{{ board.id }}/createComment/">
+          <div class="collapse" id="commentWrite">
+            <input type="text" style="width: 20%; position: relative; left: 1px" name="commentUserName"
+              placeholder="닉네임" />
+            <div class="card card-body" style="margin-bottom: 15px; padding:0">
+              <textarea name="commentContent"></textarea>
+            </div>
+            <input class="btn btn-secondary" style="float:right;" type="submit" value="작성" />
+          </div>
+        </form>
       </div>
     </div>
+    <div>
+      {% for comment in comments %}
+      <div>
+        <div class="media">
+          <img src="..." class="mr-3" alt="..." />
+          <div class="media-body">
+            <h6 class="mt-0">{{ comment.userName }}</h6>
+            {{ comment.content }}
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#commentDelete"
+          style="width: 50px; height: 30px; float:right; position:relative; bottom: 40px;">
+          <span style="font-size:70%">
+            댓삭
+          </span>
+        </button>
+        <div class="modal fade" id="commentDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <br />
+                <h2>
+                  ㄹㅇ?
+                </h2>
+                <br />
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  ㄴㄴ
+                </button>
+                <a class="btn btn-primary" href="/boards/read/{{ board.id }}/deleteComment/{{ comment.id }}/">
+                  묻고 따블로가</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p>
+          <button class="btn btn-secondary"
+            style="width: 50px; height: 30px; float:right; position:relative; bottom: 40px; margin-right: 5px"
+            type="button" data-toggle="collapse" data-target="#collapseExample{{ comment.id }}" aria-expanded="false"
+            aria-controls="collapseExample">
+            <span style="font-size:70%">
+              대댓
+            </span>
+          </button>
+        </p>
 
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
