@@ -75,9 +75,16 @@
       {% for comment in comments %}
       <div>
         <div class="media">
-          <img src="..." class="mr-3" alt="..." />
+          <img src="..." class="mr-3" alt="..." style="position: relative; top:5px" />
           <div class="media-body">
-            <h6 class="mt-0">{{ comment.userName }}</h6>
+            <div>
+              <span style="font-size: 18px">
+                {{ comment.userName }}
+              </span>
+              <span style="padding-left: 20px; font-size: 12px; position: relative; bottom: 1px;">
+                {{ comment.create_at }}
+              </span>
+            </div>
             {{ comment.content }}
           </div>
         </div>
@@ -111,14 +118,69 @@
         <p>
           <button class="btn btn-secondary"
             style="width: 50px; height: 30px; float:right; position:relative; bottom: 40px; margin-right: 5px"
-            type="button" data-toggle="collapse" data-target="#collapseExample{{ comment.id }}" aria-expanded="false"
+            type="button" data-toggle="collapse" data-target="#reCommentWrite{{ comment.id }}" aria-expanded="false"
             aria-controls="collapseExample">
             <span style="font-size:70%">
               대댓
             </span>
           </button>
         </p>
-
+        <form action="/boards/read/{{ board.id }}/comment/{{ comment.id }}/createReComment/">
+          <div class="collapse" id="reCommentWrite{{ comment.id }}" style="margin-left:50px; margin-bottom: 50px;">
+            <input type="text" style="width: 20%; position: relative; left: 1px" name="reCommentUserName"
+              placeholder="닉네임" />
+            <div class="card card-body" style="margin-bottom: 15px; padding:0">
+              <textarea name="reCommentContent"></textarea>
+            </div>
+            <input class="btn btn-secondary" style="float:right; width: 50px; height: 30px;" type="submit" value="작성" />
+          </div>
+        </form>
+        {% for recomment in recomments %}
+        {% if recomment.comment.id == comment.id %}
+        <div class="media" style="margin-left: 50px;">
+          <img src="..." class="mr-3" alt="..." />
+          <div class="media-body">
+            <div>
+              <span style="font-size: 18px">
+                {{ recomment.userName }}
+              </span>
+              <span style="padding-left: 20px; font-size: 12px; position: relative; bottom: 1px;">
+                {{ recomment.create_at }}
+              </span>
+            </div>
+            {{ recomment.content }}
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#reCommentDelete"
+          style="width: 50px; height: 30px; float:right; position:relative; bottom: 40px;">
+          <span style="font-size:70%">
+            댓삭
+          </span>
+        </button>
+        <div class="modal fade" id="reCommentDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <br />
+                <h2>
+                  ㄹㅇ?
+                </h2>
+                <br />
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  ㄴㄴ
+                </button>
+                <a class="btn btn-primary"
+                  href="/boards/read/{{ board.id }}/comment/{{ comment.id }}/deleteReComment/{{ recomment.id }}/">
+                  묻고 따블로가</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
         {% endfor %}
       </div>
     </div>
