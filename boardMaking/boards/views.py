@@ -1,19 +1,23 @@
 from django.shortcuts import render, redirect
 from .models import Board, Comment, ReComment
-
-
-def write(request):
-    return render(request, 'boards/write.html')
+from .forms import BoardForm, CommentForm, ReCommentForm
 
 
 def create(request):
-    title = request.GET.get('title')
-    content = request.GET.get('content')
-    board = Board()
-    board.title = title
-    board.content = content
-    board.save()
-    return redirect('/boards/lists/')
+    if request.method == 'POST':
+        form = BoardForm(request.POST)
+        if form.is_valid():
+            board = form.save()
+            board.save()
+            return redirect('/boards/lists/')
+        else:
+            form = BoardForm()
+            error = '엄한거 처넣지 말고 제대로 써라'
+            return render(request, 'boards/write.html', {'form': form, 'error': error})
+    else:
+        form = BoardForm()
+        error = ''
+        return render(request, 'boards/write.html', {'form': form, 'error': error})
 
 
 def lists(request):
@@ -30,20 +34,18 @@ def read(request, boardId):
     return render(request, 'boards/read.html', context)
 
 
-def displayUpdate(request, boardId):
-    board = Board.objects.get(pk=boardId)
-    context = {'board': board}
-    return render(request, 'boards/update.html', context)
-
-
 def update(request, boardId):
     board = Board.objects.get(pk=boardId)
-    title = request.GET.get('title')
-    content = request.GET.get('content')
-    board.title = title
-    board.content = content
-    board.save()
-    return redirect(f'/boards/read/{boardId}/')
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        board.title = title
+        board.content = content
+        board.save()
+        return redirect(f'/boards/read/{boardId}/')
+    else:
+        context = {'board': board}
+        return render(request, 'boards/update.html', context)
 
 
 def delete(request, boardId):
@@ -53,14 +55,15 @@ def delete(request, boardId):
 
 
 def createComment(request, boardId):
-    content = request.GET.get('commentContent')
-    userName = request.GET.get('commentUserName')
-    comment = Comment()
-    comment.board = Board.objects.get(pk=boardId)
-    comment.content = content
-    comment.userName = userName
-    comment.save()
-    return redirect(f'/boards/read/{boardId}/')
+    board = Board.objects.get(pk=boardId)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save()
+            comment.board = board
+            comment.save()
+            return redirect(f'/boards/read/{boardId}')
+        return redirect(f'/boards/read/{boardId}/')
 
 
 def deleteComment(request, boardId, commentId):
@@ -71,14 +74,14 @@ def deleteComment(request, boardId, commentId):
 
 
 def createReComment(request, boardId, commentId):
-    userName = request.GET.get('reCommentUserName')
-    content = request.GET.get('reCommentContent')
-    recomment = ReComment()
-    recomment.comment = Comment.objects.get(pk=commentId)
-    recomment.userName = userName
-    recomment.content = content
-    recomment.save()
-    return redirect(f'/boards/read/{boardId}/')
+    comment = Comment.objects.get(pk=commentId)
+    if request.method == 'POST':
+        form = ReCommentForm(request.POST)
+        if form.is_valid():
+            recomment = form.save()
+            recomment.comment = comment
+            recomment.save()
+        return redirect(f'/boards/read/{boardId}/')
 
 
 def deleteReComment(request, boardId, commentId, reCommentId):

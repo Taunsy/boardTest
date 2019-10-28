@@ -20,6 +20,9 @@
         <h1 class="display-6" style="border-bottom: 1px solid gray">
           {{ board.title }}
         </h1>
+        <h6 style="padding-left: 3px">
+          {{ board.create_at }}
+        </h6>
         <p class="lead" style="font-size: 90%">
           {{ board.content }}
         </p>
@@ -29,7 +32,7 @@
           style="float: right;">
           삭제
         </button>
-        <a class="btn btn-secondary" href="/boards/displayUpdate/{{ board.id }}"
+        <a class="btn btn-secondary" href="/boards/update/{{ board.id }}"
           style="float: right; margin-right: 10px">수정</a>
 
         <!-- Modal -->
@@ -59,12 +62,12 @@
             댓글
           </button>
         </p>
-        <form action="/boards/read/{{ board.id }}/createComment/">
+        <form action="/boards/read/{{ board.id }}/createComment/" method="POST">
+          {% csrf_token %}
           <div class="collapse" id="commentWrite">
-            <input type="text" style="width: 20%; position: relative; left: 1px" name="commentUserName"
-              placeholder="닉네임" />
+            <input type="text" style="width: 20%; position: relative; left: 1px" name="userName" placeholder="닉네임" />
             <div class="card card-body" style="margin-bottom: 15px; padding:0">
-              <textarea name="commentContent"></textarea>
+              <textarea name="content"></textarea>
             </div>
             <input class="btn btn-secondary" style="float:right;" type="submit" value="작성" />
           </div>
@@ -88,14 +91,14 @@
             {{ comment.content }}
           </div>
         </div>
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#commentDelete"
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#commentDelete{{ comment.id }}"
           style="width: 50px; height: 30px; float:right; position:relative; bottom: 40px;">
           <span style="font-size:70%">
             댓삭
           </span>
         </button>
-        <div class="modal fade" id="commentDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-          aria-hidden="true">
+        <div class="modal fade" id="commentDelete{{ comment.id }}" tabindex="-1" role="dialog"
+          aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
@@ -125,20 +128,20 @@
             </span>
           </button>
         </p>
-        <form action="/boards/read/{{ board.id }}/comment/{{ comment.id }}/createReComment/">
+        <form action="/boards/read/{{ board.id }}/comment/{{ comment.id }}/createReComment/" method="POST">
+          {% csrf_token %}
           <div class="collapse" id="reCommentWrite{{ comment.id }}" style="margin-left:50px; margin-bottom: 50px;">
-            <input type="text" style="width: 20%; position: relative; left: 1px" name="reCommentUserName"
-              placeholder="닉네임" />
+            <input type="text" style="width: 20%; position: relative; left: 1px" name="userName" placeholder="닉네임" />
             <div class="card card-body" style="margin-bottom: 15px; padding:0">
-              <textarea name="reCommentContent"></textarea>
+              <textarea name="content"></textarea>
             </div>
             <input class="btn btn-secondary" style="float:right; width: 50px; height: 30px;" type="submit" value="작성" />
           </div>
         </form>
         {% for recomment in recomments %}
         {% if recomment.comment.id == comment.id %}
-        <div class="media" style="margin-left: 50px;">
-          <img src="..." class="mr-3" alt="..." />
+        <div class="media" style="margin-left: 50px; margin-bottom:15px">
+          <img src="..." class="mr-3" alt="..." style="position: relative; top:5px" />
           <div class="media-body">
             <div>
               <span style="font-size: 18px">
@@ -151,14 +154,15 @@
             {{ recomment.content }}
           </div>
         </div>
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#reCommentDelete"
+        <button type="button" class="btn btn-secondary" data-toggle="modal"
+          data-target="#reCommentDelete{{ recomment.id }}"
           style="width: 50px; height: 30px; float:right; position:relative; bottom: 40px;">
           <span style="font-size:70%">
             댓삭
           </span>
         </button>
-        <div class="modal fade" id="reCommentDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-          aria-hidden="true">
+        <div class="modal fade" id="reCommentDelete{{ recomment.id }}" tabindex="-1" role="dialog"
+          aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
