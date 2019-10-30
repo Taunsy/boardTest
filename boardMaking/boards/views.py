@@ -37,14 +37,15 @@ def read(request, boardId):
 def update(request, boardId):
     board = Board.objects.get(pk=boardId)
     if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        board.title = title
-        board.content = content
-        board.save()
-        return redirect(f'/boards/read/{boardId}/')
+        form = BoardForm(request.POST)
+        if form.is_valid():
+            board.title = form.cleaned_data['title']
+            board.content = form.cleaned_data['content']
+            board.save()
+            return redirect(f'/boards/read/{boardId}/')
     else:
-        context = {'board': board}
+        form = BoardForm()
+        context = {'form': form, 'board': board}
         return render(request, 'boards/update.html', context)
 
 
@@ -67,7 +68,6 @@ def createComment(request, boardId):
 
 
 def deleteComment(request, boardId, commentId):
-    board = Board.objects.get(pk=boardId)
     comment = Comment.objects.filter(board__id=boardId, pk=commentId)
     comment.delete()
     return redirect(f'/boards/read/{boardId}/')
@@ -85,8 +85,6 @@ def createReComment(request, boardId, commentId):
 
 
 def deleteReComment(request, boardId, commentId, reCommentId):
-    board = Board.objects.get(pk=boardId)
-    comment = Comment.objects.filter(board__id=boardId, pk=commentId)
     recomment = ReComment.objects.filter(
         comment__id=commentId, pk=reCommentId)
     recomment.delete()
