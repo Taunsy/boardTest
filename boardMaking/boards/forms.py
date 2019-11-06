@@ -5,16 +5,16 @@ from .models import Board, Comment, ReComment
 class BoardForm(forms.ModelForm):
     class Meta:
         model = Board
-        fields = {'title', 'content'}
+        fields = {'title', 'content', 'username'}
 
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = {'userName', 'content'}
+        fields = {'username', 'content'}
 
 
 class ReCommentForm(forms.ModelForm):
     class Meta:
         model = ReComment
-        fields = {'userName', 'content'}
+        fields = {'username', 'content'}

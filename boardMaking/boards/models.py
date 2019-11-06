@@ -4,6 +4,7 @@ from django.db import models
 
 
 class Board(models.Model):
+    username = models.CharField(max_length=20, null=True, blank=True)
     title = models.CharField(max_length=30)
     content = models.TextField()
     create_at = models.DateTimeField(auto_now_add=True)
@@ -11,14 +12,14 @@ class Board(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
-    userName = models.CharField(max_length=10)
+    username = models.CharField(max_length=20, null=True, blank=True)
     create_at = models.DateTimeField(auto_now_add=True)
     board = models.ForeignKey(
         Board, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class ReComment(models.Model):
-    userName = models.CharField(max_length=10)
+    username = models.CharField(max_length=20, null=True, blank=True)
     content = models.TextField()
     create_at = models.DateTimeField(auto_now_add=True)
     comment = models.ForeignKey(

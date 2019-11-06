@@ -10,12 +10,12 @@ from django.contrib.auth.models import User
 def signin(request):
     if request.user.is_authenticated:
         error = '로그인 상태다 이말이야'
-        return render(request, 'account/loginSuccess.html', {'error': error})
+        return render(request, '././boards/templates/boards/lists', {'error': error})
     if request.method == 'POST':
         user_form = UserCreationForm(request.POST)
         if user_form.is_valid():
             user_form.save()
-            return redirect('/account/loginSuccess/')
+            return redirect('/account/login/')
         else:
             error = '비밀번호는 8자 이상이다 이말이야'
             return render(request, 'account/signin.html', {'error': error})
@@ -27,12 +27,12 @@ def signin(request):
 def login(request):
     if request.user.is_authenticated:
         error = '지랄마라'
-        return render(request, 'account/loginSuccess.html', {'error': error})
+        return redirect('/boards/lists/', {'error': error})
     if request.method == 'POST':
         login_form = AuthenticationForm(request, request.POST)
         if login_form.is_valid():
             auth_login(request, login_form.get_user())
-            return redirect('/account/loginSuccess/')
+            return redirect('/boards/lists/')
         else:
             error = '이게 아니란 말이다'
             return render(request, 'account/login.html', {'error': error})

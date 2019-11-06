@@ -8,6 +8,7 @@ def create(request):
         form = BoardForm(request.POST)
         if form.is_valid():
             board = form.save()
+            board.username = request.user.username
             board.save()
             return redirect('/boards/lists/')
         else:
@@ -22,7 +23,12 @@ def create(request):
 
 def lists(request):
     boards = Board.objects.all()
-    context = {'boards': boards}
+    if request.user.is_authenticated:
+        context = {'boards': boards, 'accountstatus1': '로그아웃',
+                   'accountstatus2': 'logout'}
+    else:
+        context = {'boards': boards, 'accountstatus1': '로그인',
+                   'accountstatus2': 'login'}
     return render(request, 'boards/lists.html', context)
 
 
@@ -44,15 +50,23 @@ def update(request, boardId):
             board.save()
             return redirect(f'/boards/read/{boardId}/')
     else:
-        form = BoardForm()
-        context = {'form': form, 'board': board}
-        return render(request, 'boards/update.html', context)
+        if board.username == request.user.username:
+            form = BoardForm()
+            context = {'form': form, 'board': board}
+            return render(request, 'boards/update.html', context)
+        else:
+            error = '이건 너가 쓴게 아니다 이말이야'
+            return render(request, 'boards/read.html', {'error': error})
 
 
 def delete(request, boardId):
     board = Board.objects.get(pk=boardId)
-    board.delete()
-    return redirect('/boards/lists/')
+    if board.username == request.user.username:
+        board.delete()
+        return redirect('/boards/lists/')
+    else:
+        error = '이건 너가 쓴게 아니다 이말이야'
+        return render(request, 'boards/read.html', {'error': error})
 
 
 def createComment(request, boardId):
@@ -62,6 +76,7 @@ def createComment(request, boardId):
         if form.is_valid():
             comment = form.save()
             comment.board = board
+            comment.username = request.user.username
             comment.save()
             return redirect(f'/boards/read/{boardId}')
         return redirect(f'/boards/read/{boardId}/')
@@ -69,8 +84,12 @@ def createComment(request, boardId):
 
 def deleteComment(request, boardId, commentId):
     comment = Comment.objects.filter(board__id=boardId, pk=commentId)
-    comment.delete()
-    return redirect(f'/boards/read/{boardId}/')
+    if comment.username == request.user.username:
+        comment.delete()
+        return redirect(f'/boards/read/{boardId}/')
+    else:
+        error = '이건 너가 쓴게 아니다 이말이야'
+        return render(request, 'boards/read.html', {'error': error})
 
 
 def createReComment(request, boardId, commentId):
@@ -80,6 +99,7 @@ def createReComment(request, boardId, commentId):
         if form.is_valid():
             recomment = form.save()
             recomment.comment = comment
+            recomment.username = request.user.username
             recomment.save()
         return redirect(f'/boards/read/{boardId}/')
 
@@ -87,5 +107,9 @@ def createReComment(request, boardId, commentId):
 def deleteReComment(request, boardId, commentId, reCommentId):
     recomment = ReComment.objects.filter(
         comment__id=commentId, pk=reCommentId)
-    recomment.delete()
-    return redirect(f'/boards/read/{boardId}/')
+    if recomment.username == request.user.username:
+        recomment.delete()
+        return redirect(f'/boards/read/{boardId}/')
+    else:
+        error = '이건 너가 쓴게 아니다 이말이야'
+        return render(request, 'boards/read.html', {'error': error})

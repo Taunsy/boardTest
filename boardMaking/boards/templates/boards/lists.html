@@ -11,10 +11,18 @@
 </head>
 
 <body>
+  {% if error %}
+  <div class="alert alert-primary" role="alert">
+    {{ error }}
+  </div>
+  {% endif %}
+  <a href="/account/{{ accountstatus2 }}/" style="float: right; margin-right: 35px"><button type="submit"
+      class="btn btn-secondary">{{ accountstatus1 }}</button></a>
   <table class="table table-dark">
     <thead>
       <tr>
         <th scope="col">#</th>
+        <th scope="col">Username</th>
         <th scope="col">TITLE</th>
         <th scope="col">Time</th>
       </tr>
@@ -23,6 +31,7 @@
       {% for board in boards %}
       <tr>
         <th scope="row">{{ board.id }}</th>
+        <td>{{ board.username }}</td>
         <td>
           <a href="/boards/read/{{ board.id }}/">
             {{ board.title }}
@@ -33,7 +42,7 @@
       {% endfor %}
     </tbody>
   </table>
-  <a class="btn btn-secondary" href="/boards/create/" style="float: right;">글 작성</a>
+  <a class="btn btn-secondary" href="/boards/create/" style="float: right; margin-right:30px">글 작성</a>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
